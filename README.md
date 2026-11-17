@@ -115,7 +115,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\deploy_and_test.ps1
 
 [`deploy_and_test.ps1`](scripts/deploy_and_test.ps1) copies the repo into the manager container, installs the rules and fixtures, validates them with `wazuh-analysisd -t` (it stops before restarting the manager if a rule is broken), restarts the manager and runs the test suite. Results are written to `test-output.txt` and `test-results.json`. `run_tests.py` exits with code 1 if any test fails, so it can gate a pipeline. It reads the API endpoint and credentials from `WAZUH_API_URL`, `WAZUH_API_USER` and `WAZUH_API_PASS`, and falls back to the defaults of the wazuh-docker single-node deployment.
 
-![Test run - 25/25 passed](screenshots/02-tests-run-part2-25-of-25-passed.jpg)
+![Test run - 40/40 passed](screenshots/17-hd-tests-40-of-40-passed.jpg)
 
 Static checks need no Wazuh at all:
 
@@ -206,7 +206,8 @@ wazuh-detection-lab/
 
 | File | Shows |
 |---|---|
-| [01](screenshots/01-tests-run-part1.jpg), [02](screenshots/02-tests-run-part2-25-of-25-passed.jpg) | Full test run: deploy, restart, 25/25 passed |
+| [17](screenshots/17-hd-tests-40-of-40-passed.jpg) | Test run (HD): all Windows tests including the new rules, 40/40 passed |
+| [01](screenshots/01-tests-run-part1.jpg), [02](screenshots/02-tests-run-part2-25-of-25-passed.jpg) | First full test run: deploy, restart, 25/25 passed (before the new rules) |
 | [03](screenshots/03-logtest-DL-WIN-008-alert-100117.jpg) | `wazuh-logtest`: 7 failures + 1 success → rule 100117, level 13, T1110/T1078 |
 | [04](screenshots/04-logtest-NEG-WIN-008-no-alert.jpg) | Same sequence, success from another IP → no alert |
 | [05](screenshots/05-wazuh-manager-logs.jpg) | Rule files on the manager, `ossec.log`, `wazuh-analysisd -t` OK |
