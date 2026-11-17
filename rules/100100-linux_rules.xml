@@ -40,4 +40,16 @@
     <group>privilege_escalation,</group>
   </rule>
 
+  <!-- DL-LNX-004: New account created with UID 0 (backdoor root account, e.g. useradd -o -u 0) -->
+  <rule id="100103" level="13">
+    <if_sid>5902</if_sid>
+    <field name="uid">^0$</field>
+    <description>[DL-LNX-004] New user $(dstuser) created with UID 0 - backdoor root account</description>
+    <mitre>
+      <id>T1136.001</id>
+      <id>T1078.003</id>
+    </mitre>
+    <group>persistence,privilege_escalation,</group>
+  </rule>
+
 </group>

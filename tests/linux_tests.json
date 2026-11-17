@@ -49,5 +49,23 @@
       "Nov 17 12:01:00 web01 sudo:   bob : TTY=pts/0 ; PWD=/home/bob ; USER=root ; COMMAND=/usr/bin/apt update"
     ],
     "expect_not_rule": "100102"
+  },
+  {
+    "id": "DL-LNX-004",
+    "description": "useradd creates a user with UID 0",
+    "log_format": "syslog",
+    "events": [
+      "Nov 17 13:00:00 web01 useradd[3101]: new user: name=sysupdate, UID=0, GID=0, home=/root, shell=/bin/bash"
+    ],
+    "expect_rule": "100103"
+  },
+  {
+    "id": "NEG-LNX-004",
+    "description": "Normal useradd (UID 1001) must NOT trigger DL-LNX-004",
+    "log_format": "syslog",
+    "events": [
+      "Nov 17 13:01:00 web01 useradd[3102]: new user: name=alice, UID=1001, GID=1001, home=/home/alice, shell=/bin/bash"
+    ],
+    "expect_not_rule": "100103"
   }
 ]

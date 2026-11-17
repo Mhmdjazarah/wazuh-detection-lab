@@ -148,4 +148,86 @@
     <group>impact,ransomware,</group>
   </rule>
 
+  <!-- ===================== DEFENSE EVASION ===================== -->
+
+  <!-- DL-WIN-011: Security audit log cleared (event 1102).
+       Built-in rule 60117 alerts at level 9 but maps it to T1070.004 (File Deletion);
+       clearing the event log is T1070.001 (Clear Windows Event Logs). -->
+  <rule id="100121" level="12">
+    <if_group>logs_cleared</if_group>
+    <field name="win.system.channel">^Security$</field>
+    <field name="win.system.eventID">^1102$</field>
+    <description>[DL-WIN-011] Security audit log CLEARED on $(win.system.computer) - possible anti-forensics</description>
+    <mitre>
+      <id>T1070.001</id>
+    </mitre>
+    <group>defense_evasion,</group>
+  </rule>
+
+  <!-- DL-WIN-012: Event log cleared from the command line -->
+  <rule id="100122" level="12">
+    <if_group>sysmon_event1</if_group>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)(wevtutil(\.exe)?"?\s+(cl|clear-log)\s|Clear-EventLog|Remove-EventLog|GlobalSession\.ClearLog)</field>
+    <description>[DL-WIN-012] Windows event log cleared from the command line: $(win.eventdata.commandLine)</description>
+    <mitre>
+      <id>T1070.001</id>
+    </mitre>
+    <group>defense_evasion,</group>
+  </rule>
+
+  <!-- ===================== LATERAL MOVEMENT ===================== -->
+
+  <!-- DL-WIN-013: PsExec-style remote execution service installed (System event 7045).
+       Built-in 61138 only says "New Windows Service Created" (level 5). -->
+  <rule id="100123" level="12">
+    <if_group>windows_system</if_group>
+    <field name="win.system.eventID">^7045$</field>
+    <field name="win.eventdata.imagePath" type="pcre2">(?i)(psexesvc|paexec|remcom|csexec|%comspec%|cmd(\.exe)?\s+\/c|powershell|\\\\(127\.0\.0\.1|localhost)\\\w+\$|\\admin\$\\)</field>
+    <description>[DL-WIN-013] Remote-execution service installed on $(win.system.computer): $(win.eventdata.serviceName) -> $(win.eventdata.imagePath)</description>
+    <mitre>
+      <id>T1569.002</id>
+      <id>T1021.002</id>
+    </mitre>
+    <group>lateral_movement,execution,</group>
+  </rule>
+
+  <!-- DL-WIN-014: Remote command execution via WMI / WinRM / PsExec from the command line -->
+  <rule id="100124" level="12">
+    <if_group>sysmon_event1</if_group>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)(wmic(\.exe)?"?\s+.*\/node:\s*\S+.*process\s+call\s+create|Invoke-(Command|WmiMethod|CimMethod)\s+.*-ComputerName\s+\S+|winrs(\.exe)?"?\s+.*-r(emote)?:\S+|(ps|pa)exec(64)?(\.exe)?"?\s+.*\\\\\S+)</field>
+    <description>[DL-WIN-014] Remote command execution (WMI / WinRM / PsExec) from $(win.system.computer): $(win.eventdata.commandLine)</description>
+    <mitre>
+      <id>T1047</id>
+      <id>T1021.006</id>
+      <id>T1021.002</id>
+    </mitre>
+    <group>lateral_movement,execution,</group>
+  </rule>
+
+  <!-- ===================== COLLECTION / EXFILTRATION ===================== -->
+
+  <!-- DL-WIN-015: Data staged into a password-protected archive (7-Zip / RAR) -->
+  <rule id="100125" level="10">
+    <if_group>sysmon_event1</if_group>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)\b(7z|7za|7zr|7zg|rar|winrar)(\.exe)?"?\s+a\s+(\S+\s+)*-h?p\S*</field>
+    <description>[DL-WIN-015] Data staged in a password-protected archive: $(win.eventdata.commandLine)</description>
+    <mitre>
+      <id>T1560.001</id>
+    </mitre>
+    <group>collection,</group>
+  </rule>
+
+  <!-- DL-WIN-016: Exfiltration to cloud storage / web upload with command-line tools.
+       rclone remotes need 2+ characters before ":" so local drive letters (D:\) do not match. -->
+  <rule id="100126" level="13">
+    <if_group>sysmon_event1</if_group>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)(rclone(\.exe)?"?\s+(copy|copyto|sync|move|moveto)\s+.*\s[\w-]{2,}:|curl(\.exe)?"?\s(.*\s)?(-T\s|--upload-file\s|-F\s+\S*=@)|Invoke-(WebRequest|RestMethod)\s+.*-InFile\s)</field>
+    <description>[DL-WIN-016] Possible data EXFILTRATION with $(win.eventdata.image): $(win.eventdata.commandLine)</description>
+    <mitre>
+      <id>T1567.002</id>
+      <id>T1048</id>
+    </mitre>
+    <group>exfiltration,</group>
+  </rule>
+
 </group>

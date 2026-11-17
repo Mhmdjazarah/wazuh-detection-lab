@@ -6,7 +6,8 @@
   the built-in Windows rule tree (60000 -> 61603 ...).
 
   These rules rebuild the same *groups* (sysmon_event1, sysmon_event_13,
-  authentication_success, authentication_failed) for JSON-decoded test events.
+  authentication_success, authentication_failed, windows_system, logs_cleared)
+  for JSON-decoded test events.
   The detection rules use <if_group>, so they attach to BOTH the real built-in
   rules (live agents) and these fixtures (tests) - same rule logic, testable.
 
@@ -58,6 +59,23 @@
     <field name="win.system.eventID">^4624$</field>
     <description>[fixture] Windows logon success</description>
     <group>authentication_success,</group>
+  </rule>
+
+  <!-- Built-in System-channel rules (e.g. 61138, event 7045) carry the group windows_system -->
+  <rule id="100095" level="0">
+    <if_sid>100090</if_sid>
+    <field name="win.system.channel">^System$</field>
+    <description>[fixture] Windows System channel event</description>
+    <group>windows_system,</group>
+  </rule>
+
+  <!-- Built-in 60117 (event 1102, audit log cleared) carries the group logs_cleared -->
+  <rule id="100096" level="0">
+    <if_sid>100090</if_sid>
+    <field name="win.system.channel">^Security$</field>
+    <field name="win.system.eventID">^1102$</field>
+    <description>[fixture] Windows audit log cleared</description>
+    <group>logs_cleared,</group>
   </rule>
 
 </group>

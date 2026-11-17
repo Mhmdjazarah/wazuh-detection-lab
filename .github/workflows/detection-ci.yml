@@ -1,0 +1,27 @@
+name: Detection rules CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  static-checks:
+    name: Static rule checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # XML well-formed, unique IDs in the custom range, MITRE IDs valid,
+      # every [DL-...] rule above level 3 has a positive test case
+      - name: Validate rules and test coverage
+        run: python scripts/validate_rules.py
+
+      # The ATT&CK Navigator layer must be regenerated whenever rule MITRE tags change
+      - name: MITRE Navigator layer is up to date
+        run: |
+          python scripts/build_navigator_layer.py
+          git diff --exit-code mitre/detection-lab-layer.json

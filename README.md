@@ -2,7 +2,7 @@
 
 Custom Wazuh detection rules for **Windows (Sysmon + Security log)**, **Linux / SSH**, **web servers** and **MISP threat intelligence**, every one mapped to **MITRE ATT&CK** and covered by an automated test suite that replays attack samples through the real Wazuh rule engine.
 
-**20 detection rules · 22 ATT&CK techniques · 25/25 tests passing (21 positive, 4 negative)** — Wazuh 4.9.2, single-node Docker.
+**27 detection rules · 31 ATT&CK techniques across 13 tactics · 40/40 tests passing (30 positive, 10 negative)** — Wazuh 4.9.2, single-node Docker.
 
 ![Wazuh dashboard - detection lab alerts](screenshots/06-dashboard-threat-hunting-overview.jpg)
 
@@ -13,6 +13,7 @@ Custom Wazuh detection rules for **Windows (Sysmon + Security log)**, **Linux / 
 - **Correlation, not just matching** – brute force → successful logon from the same IP, bursts of discovery commands on one host.
 - **Threat-intel enrichment** – a custom Wazuh integration looks up IOCs from alerts in MISP and raises its own alerts on matches.
 - **ATT&CK coverage map** – a Navigator layer is generated straight from the `<mitre>` tags in the rules.
+- **CI** – GitHub Actions validates every push: rule syntax, IDs, MITRE mapping, test coverage, and an up-to-date Navigator layer.
 
 ## Architecture
 
@@ -38,6 +39,7 @@ Windows rules attach to Wazuh's built-in rule **groups** (`sysmon_event1`, `sysm
 | DL-LNX-001 | 100100 | 10 | SSH brute force: 6+ failed passwords from one IP in 60 s | T1110.001 |
 | DL-LNX-002 | 100101 | 13 | SSH login **success** after 5+ failures from the same IP (300 s) | T1110.001, T1078 |
 | DL-LNX-003 | 100102 | 10 | `sudo` spawning an interactive root shell | T1548.003 |
+| DL-LNX-004 | 100103 | 13 | New account created with **UID 0** (backdoor root account) | T1136.001, T1078.003 |
 | **Windows** — [`rules/100110-windows_rules.xml`](rules/100110-windows_rules.xml) |||||
 | DL-WIN-001 | 100110 | 12 | PowerShell with a Base64 `-EncodedCommand` | T1059.001, T1027 |
 | DL-WIN-002 | 100111 | 13 | Office app spawning cmd / PowerShell / script host (malicious macro) | T1566.001, T1204.002 |
@@ -50,6 +52,12 @@ Windows rules attach to Wazuh's built-in rule **groups** (`sysmon_event1`, `sysm
 | DL-WIN-009a | 100118 | 3 | Single discovery command (input for 009b) | T1082, T1087 |
 | DL-WIN-009b | 100119 | 10 | 4+ discovery commands on one host in 120 s (hands-on-keyboard) | T1082, T1087 |
 | DL-WIN-010 | 100120 | 15 | Shadow copies deleted / recovery disabled (ransomware precursor) | T1490 |
+| DL-WIN-011 | 100121 | 12 | Security audit log cleared (event 1102) | T1070.001 |
+| DL-WIN-012 | 100122 | 12 | Event log cleared from the command line (`wevtutil cl`, `Clear-EventLog`) | T1070.001 |
+| DL-WIN-013 | 100123 | 12 | PsExec-style remote execution service installed (event 7045) | T1569.002, T1021.002 |
+| DL-WIN-014 | 100124 | 12 | Remote command execution via WMI (`/node:`), WinRM (`Invoke-Command`, `winrs`) or PsExec | T1047, T1021.006, T1021.002 |
+| DL-WIN-015 | 100125 | 10 | Data staged in a password-protected 7-Zip / RAR archive | T1560.001 |
+| DL-WIN-016 | 100126 | 13 | Exfiltration with rclone to a cloud remote or upload with `curl -T` / `-F file=@` | T1567.002, T1048 |
 | **Web** — [`rules/100130-web_rules.xml`](rules/100130-web_rules.xml) |||||
 | DL-WEB-001 | 100130 | 12 | SQL injection in the URL (UNION SELECT, `' OR '1'='1`, `sleep()`, …) | T1190 |
 | DL-WEB-002 | 100131 | 10 | Path traversal / LFI (`../../etc/passwd`, encoded variants) | T1190, T1083 |
@@ -90,6 +98,12 @@ The negative tests each change one thing compared to a positive case:
 | NEG-WEB-001 | a normal request with query parameters is not SQL injection |
 | NEG-WIN-001 | normal PowerShell without `-EncodedCommand` does not fire DL-WIN-001 |
 | NEG-WIN-008 | a logon success from a **different** IP after the failures does not fire DL-WIN-008 |
+| NEG-LNX-004 | a normal `useradd` (UID 1001) is not a backdoor account |
+| NEG-WIN-012 | `wevtutil qe` (query) is not log clearing |
+| NEG-WIN-013 | a normal service install (Chrome elevation service) is not PsExec |
+| NEG-WIN-014 | a local WMI query (`wmic os get caption`) is not remote execution |
+| NEG-WIN-015 | an archive **without** a password is not staging |
+| NEG-WIN-016 | `rclone copy` to a local drive (`D:\Backup`) is not exfiltration |
 
 ### Run everything
 
@@ -107,7 +121,7 @@ Static checks need no Wazuh at all:
 python scripts/validate_rules.py
 ```
 
-They check that every file is valid XML, that rule IDs are unique and inside the custom range, that every `[DL-…]` alerting rule has a valid MITRE ID, and that every `[DL-…]` rule above level 3 has at least one positive test.
+They check that every file is valid XML, that rule IDs are unique and inside the custom range, that every `[DL-…]` alerting rule has a valid MITRE ID, and that every `[DL-…]` rule above level 3 has at least one positive test. [`.github/workflows/detection-ci.yml`](.github/workflows/detection-ci.yml) runs these checks on every push and pull request. It also regenerates the ATT&CK layer and fails if the committed one is out of date.
 
 ### Test fixtures for Windows events
 
@@ -132,7 +146,7 @@ Then open **Threat Hunting → Events** and filter with `rule.groups:detection_l
 
 ## MITRE ATT&CK coverage
 
-The rules cover **22 techniques across 10 tactics**. [`scripts/build_navigator_layer.py`](scripts/build_navigator_layer.py) reads the `<mitre>` IDs of every `[DL-…]` rule and writes [`mitre/detection-lab-layer.json`](mitre/detection-lab-layer.json). The score of each technique is the highest rule level that covers it, and the comment lists the rules. To view it, open the [ATT&CK Navigator](https://mitre-attack.github.io/attack-navigator/) → *Open Existing Layer* → *Upload from local*.
+The rules cover **31 techniques across 13 tactics**, from Reconnaissance to Exfiltration and Impact. [`scripts/build_navigator_layer.py`](scripts/build_navigator_layer.py) reads the `<mitre>` IDs of every `[DL-…]` rule and writes [`mitre/detection-lab-layer.json`](mitre/detection-lab-layer.json). The score of each technique is the highest rule level that covers it, and the comment lists the rules. To view it, open the [ATT&CK Navigator](https://mitre-attack.github.io/attack-navigator/) → *Open Existing Layer* → *Upload from local*.
 
 ```bash
 python scripts/build_navigator_layer.py
@@ -162,12 +176,15 @@ TLS verification against MISP is off by default for lab use; set `MISP_VERIFY_TL
 
 - **Correlation inputs must alert.** analysisd drops an event whose final rule is level 0 *before* storing it in the `if_matched_sid` / `if_matched_group` history. A level-0 "logon failure" rule can therefore never be counted by a brute-force rule. DL-WIN-008 failed for exactly this reason until the failure fixture was raised to level 5, the same as the built-in rule 60122.
 - **Every correlation rule needs a negative twin.** DL-WIN-008 and NEG-WIN-008 differ only in the source IP of the final logon. Together they prove that `<same_field>win.eventdata.ipAddress</same_field>` is what decides the result.
+- **Tests catch regex bugs that reviews miss.** DL-WIN-016 first used `curl(\.exe)?\s+.*\s-F`. The `\s+` after `curl.exe` consumes the only space, so `\s-F` can never match `curl.exe -F …`. The positive test DL-WIN-016b failed and exposed it. The fix is `\s(.*\s)?-F`.
+- **Don't trust built-in ATT&CK mappings blindly.** Wazuh's rule 60117 (event 1102, audit log cleared) maps to T1070.004 *File Deletion*. DL-WIN-011 re-tags it as T1070.001 *Clear Windows Event Logs* and raises it from level 9 to 12.
 - **logtest ≠ live pipeline.** logtest is perfect for fast unit tests but writes no alerts and skips the `windows_eventchannel` decoder. Dashboard demos need a real replay through the queue socket.
 
 ## Repository layout
 
 ```
 wazuh-detection-lab/
+├── .github/workflows/         CI: static checks + ATT&CK layer freshness on every push
 ├── rules/                     custom detection rules (deployed to /var/ossec/etc/rules)
 ├── tests/
 │   ├── *_tests.json           test cases (positive + negative)

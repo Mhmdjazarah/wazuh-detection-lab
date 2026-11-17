@@ -40,5 +40,6 @@ layer = {
     "legendItems": [{"label": "Detected by custom rule", "color": "#f4a259"}],
 }
 out = os.path.join(ROOT, "mitre", "detection-lab-layer.json")
-json.dump(layer, open(out, "w"), indent=2)
+with open(out, "w", newline="\n") as f:  # LF on every OS, so CI can diff it
+    json.dump(layer, f, indent=2)
 print(f"Wrote {out} with {len(techniques)} techniques")
