@@ -4,7 +4,7 @@ Custom Wazuh detection rules for **Windows (Sysmon + Security log)**, **Linux / 
 
 **27 detection rules · 31 ATT&CK techniques across 13 tactics · 40/40 tests passing (30 positive, 10 negative)** — Wazuh 4.9.2, single-node Docker.
 
-![Wazuh dashboard - detection lab alerts](screenshots/06-dashboard-threat-hunting-overview.jpg)
+![Wazuh dashboard - detection lab alerts](screenshots/14-hd-dashboard-threat-hunting-34-alerts.jpg)
 
 ## Highlights
 
@@ -139,10 +139,10 @@ Then open **Threat Hunting → Events** and filter with `rule.groups:detection_l
 
 | | |
 |---|---|
-| ![Windows alerts](screenshots/08-dashboard-alerts-windows.jpg) | ![Web, CTI and Linux alerts](screenshots/09-dashboard-alerts-web-cti-linux.jpg) |
-| Windows alerts | Web, threat-intel and Linux alerts |
-| ![Alert 100117 - rule and MITRE](screenshots/11-dashboard-alert-100117-rule-mitre.jpg) | ![MITRE ATT&CK framework coverage](screenshots/13-dashboard-mitre-framework-coverage.jpg) |
-| DL-WIN-008 alert: `previous_output` holds the correlated failures | Techniques covered by the lab's rules |
+| ![All lab alerts](screenshots/15-hd-dashboard-alerts-new-rules.jpg) | ![MITRE ATT&CK framework coverage](screenshots/16-hd-dashboard-mitre-31-techniques-13-tactics.jpg) |
+| 34 alerts from one replay, newest rules on top | 31 techniques across 13 tactics |
+| ![Alert 100117 - rule and MITRE](screenshots/11-dashboard-alert-100117-rule-mitre.jpg) | ![Alert 100117 - event data](screenshots/10-dashboard-alert-100117-event-data.jpg) |
+| DL-WIN-008 alert: rule, MITRE, and `previous_output` with the correlated failures | The same alert's event data: source IP, event 4624, user |
 
 ## MITRE ATT&CK coverage
 
@@ -212,6 +212,11 @@ wazuh-detection-lab/
 | [08](screenshots/08-dashboard-alerts-windows.jpg), [09](screenshots/09-dashboard-alerts-web-cti-linux.jpg) | All alerts by rule ID and level |
 | [10](screenshots/10-dashboard-alert-100117-event-data.jpg), [11](screenshots/11-dashboard-alert-100117-rule-mitre.jpg) | DL-WIN-008 alert details: event data, rule, MITRE, correlated events |
 | [12](screenshots/12-dashboard-mitre-attack-overview.jpg), [13](screenshots/13-dashboard-mitre-framework-coverage.jpg) | MITRE ATT&CK module: tactics and covered techniques |
+| [14](screenshots/14-hd-dashboard-threat-hunting-34-alerts.jpg) | Full rule set (HD): 34 alerts, 21 at level 12+, top ATT&CK techniques |
+| [15](screenshots/15-hd-dashboard-alerts-new-rules.jpg) | Alert list (HD) with the lateral-movement / exfiltration rules on top |
+| [16](screenshots/16-hd-dashboard-mitre-31-techniques-13-tactics.jpg) | ATT&CK coverage (HD): 31 techniques, 13 tactics |
+
+Screenshots 06–13 were taken before DL-WIN-011…016 and DL-LNX-004 were added (25 alerts). 14–16 show the full rule set.
 
 ## Author
 
