@@ -1,5 +1,7 @@
 # Wazuh Detection Engineering Lab
 
+[![Detection rules CI](https://github.com/Mhmdjazarah/wazuh-detection-lab/actions/workflows/detection-ci.yml/badge.svg)](https://github.com/Mhmdjazarah/wazuh-detection-lab/actions/workflows/detection-ci.yml)
+
 Custom Wazuh detection rules for **Windows (Sysmon + Security log)**, **Linux / SSH**, **web servers** and **MISP threat intelligence**, every one mapped to **MITRE ATT&CK** and covered by an automated test suite that replays attack samples through the real Wazuh rule engine.
 
 **27 detection rules · 31 ATT&CK techniques across 13 tactics · 40/40 tests passing (30 positive, 10 negative)** — Wazuh 4.9.2, single-node Docker.
