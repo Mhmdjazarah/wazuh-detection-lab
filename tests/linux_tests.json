@@ -1,0 +1,53 @@
+[
+  {
+    "id": "DL-LNX-001",
+    "description": "SSH brute force - 8 failed passwords from one IP",
+    "log_format": "syslog",
+    "events": [
+      "Nov 17 10:00:01 web01 sshd[2211]: Failed password for root from 203.0.113.50 port 51001 ssh2",
+      "Nov 17 10:00:02 web01 sshd[2211]: Failed password for root from 203.0.113.50 port 51002 ssh2",
+      "Nov 17 10:00:03 web01 sshd[2211]: Failed password for root from 203.0.113.50 port 51003 ssh2",
+      "Nov 17 10:00:04 web01 sshd[2211]: Failed password for root from 203.0.113.50 port 51004 ssh2",
+      "Nov 17 10:00:05 web01 sshd[2211]: Failed password for root from 203.0.113.50 port 51005 ssh2",
+      "Nov 17 10:00:06 web01 sshd[2211]: Failed password for root from 203.0.113.50 port 51006 ssh2",
+      "Nov 17 10:00:07 web01 sshd[2211]: Failed password for root from 203.0.113.50 port 51007 ssh2",
+      "Nov 17 10:00:08 web01 sshd[2211]: Failed password for root from 203.0.113.50 port 51008 ssh2"
+    ],
+    "expect_rule": "100100"
+  },
+  {
+    "id": "DL-LNX-002",
+    "description": "SSH success after brute force",
+    "log_format": "syslog",
+    "events": [
+      "Nov 17 11:00:01 web01 sshd[2211]: Failed password for admin from 198.51.100.77 port 52001 ssh2",
+      "Nov 17 11:00:02 web01 sshd[2211]: Failed password for admin from 198.51.100.77 port 52002 ssh2",
+      "Nov 17 11:00:03 web01 sshd[2211]: Failed password for admin from 198.51.100.77 port 52003 ssh2",
+      "Nov 17 11:00:04 web01 sshd[2211]: Failed password for admin from 198.51.100.77 port 52004 ssh2",
+      "Nov 17 11:00:05 web01 sshd[2211]: Failed password for admin from 198.51.100.77 port 52005 ssh2",
+      "Nov 17 11:00:06 web01 sshd[2211]: Failed password for admin from 198.51.100.77 port 52006 ssh2",
+      "Nov 17 11:00:07 web01 sshd[2211]: Failed password for admin from 198.51.100.77 port 52007 ssh2",
+      "Nov 17 11:00:30 web01 sshd[2211]: Accepted password for admin from 198.51.100.77 port 52100 ssh2"
+    ],
+    "expect_rule": "100101",
+    "expect_on_last": true
+  },
+  {
+    "id": "DL-LNX-003",
+    "description": "sudo spawning a root bash shell",
+    "log_format": "syslog",
+    "events": [
+      "Nov 17 12:00:00 web01 sudo:   bob : TTY=pts/0 ; PWD=/home/bob ; USER=root ; COMMAND=/bin/bash"
+    ],
+    "expect_rule": "100102"
+  },
+  {
+    "id": "NEG-LNX-003",
+    "description": "Normal sudo command must NOT trigger DL-LNX-003",
+    "log_format": "syslog",
+    "events": [
+      "Nov 17 12:01:00 web01 sudo:   bob : TTY=pts/0 ; PWD=/home/bob ; USER=root ; COMMAND=/usr/bin/apt update"
+    ],
+    "expect_not_rule": "100102"
+  }
+]

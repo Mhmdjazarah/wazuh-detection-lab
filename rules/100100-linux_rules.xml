@@ -1,0 +1,43 @@
+<!--
+  Wazuh Detection Engineering Lab - Linux / SSH detections
+  Rule ID range: 100100 - 100109
+  Author: Mohamad Al Jazarah
+-->
+<group name="detection_lab,linux,">
+
+  <!-- DL-LNX-001: SSH brute force (aggressive threshold) -->
+  <rule id="100100" level="10" frequency="6" timeframe="60" ignore="120">
+    <if_matched_sid>5760</if_matched_sid>
+    <same_source_ip />
+    <description>[DL-LNX-001] SSH brute force: 6+ failed passwords from $(srcip) in 60s</description>
+    <mitre>
+      <id>T1110.001</id>
+    </mitre>
+    <group>authentication_failures,brute_force,</group>
+  </rule>
+
+  <!-- DL-LNX-002: Successful SSH login after repeated failures from the same IP -->
+  <rule id="100101" level="13" frequency="5" timeframe="300">
+    <if_sid>5715</if_sid>
+    <if_matched_sid>5760</if_matched_sid>
+    <same_source_ip />
+    <description>[DL-LNX-002] SSH login SUCCESS from $(srcip) after multiple failures - possible compromised account ($(dstuser))</description>
+    <mitre>
+      <id>T1110.001</id>
+      <id>T1078</id>
+    </mitre>
+    <group>authentication_success,brute_force,compromise,</group>
+  </rule>
+
+  <!-- DL-LNX-003: sudo used to spawn an interactive root shell -->
+  <rule id="100102" level="10">
+    <if_sid>5402,5403</if_sid>
+    <regex type="pcre2">USER=root ; (TSID=\S+ ; )?COMMAND=(/usr)?/bin/((ba|z|da)?sh|su)(\s|$)</regex>
+    <description>[DL-LNX-003] sudo spawned an interactive root shell - possible privilege escalation</description>
+    <mitre>
+      <id>T1548.003</id>
+    </mitre>
+    <group>privilege_escalation,</group>
+  </rule>
+
+</group>

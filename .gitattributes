@@ -1,0 +1,4 @@
+# Keep LF everywhere: rules and Python scripts run on the Linux Wazuh manager
+* text=auto eol=lf
+*.jpg binary
+*.png binary

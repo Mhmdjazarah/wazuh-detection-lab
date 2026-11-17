@@ -1,0 +1,49 @@
+<!--
+  Wazuh Detection Engineering Lab - MISP threat-intel enrichment
+  Rule ID range: 100600 - 100609
+  Events are produced by integrations/custom-misp.py
+-->
+<group name="detection_lab,misp,threat_intel,">
+
+  <!-- Base: any event coming from the MISP integration -->
+  <rule id="100600" level="0">
+    <decoded_as>json</decoded_as>
+    <field name="integration">^misp$</field>
+    <description>MISP integration event</description>
+    <options>no_full_log</options>
+  </rule>
+
+  <!-- MISP API / connection error -->
+  <rule id="100601" level="5">
+    <if_sid>100600</if_sid>
+    <field name="misp.error">\.+</field>
+    <description>MISP integration error: $(misp.error)</description>
+    <options>no_full_log</options>
+    <group>misp_error,</group>
+  </rule>
+
+  <!-- DL-CTI-001: IOC match -->
+  <rule id="100602" level="12">
+    <if_sid>100600</if_sid>
+    <field name="misp.matched">^true$</field>
+    <description>[DL-CTI-001] MISP IOC match: $(misp.value) ($(misp.type)) - event $(misp.event_id): $(misp.event_info)</description>
+    <options>no_full_log</options>
+    <mitre>
+      <id>T1071</id>
+    </mitre>
+    <group>ioc_match,</group>
+  </rule>
+
+  <!-- DL-CTI-002: IOC match where MISP marks the attribute for IDS (high confidence) -->
+  <rule id="100603" level="14">
+    <if_sid>100602</if_sid>
+    <field name="misp.to_ids">^true$</field>
+    <description>[DL-CTI-002] HIGH-CONFIDENCE MISP IOC match (to_ids): $(misp.value) - event $(misp.event_id)</description>
+    <options>no_full_log</options>
+    <mitre>
+      <id>T1071</id>
+    </mitre>
+    <group>ioc_match,high_confidence,</group>
+  </rule>
+
+</group>

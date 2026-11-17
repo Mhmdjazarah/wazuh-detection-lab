@@ -1,0 +1,159 @@
+{
+  "name": "Wazuh Detection Engineering Lab",
+  "versions": {
+    "attack": "16",
+    "navigator": "5.1.0",
+    "layer": "4.5"
+  },
+  "domain": "enterprise-attack",
+  "description": "Techniques covered by custom Wazuh rules (score = highest rule level)",
+  "gradient": {
+    "colors": [
+      "#fff3b0",
+      "#f4a259",
+      "#bc4b51"
+    ],
+    "minValue": 0,
+    "maxValue": 15
+  },
+  "techniques": [
+    {
+      "techniqueID": "T1003.001",
+      "score": 14,
+      "enabled": true,
+      "comment": "100116 DL-WIN-007"
+    },
+    {
+      "techniqueID": "T1027",
+      "score": 12,
+      "enabled": true,
+      "comment": "100110 DL-WIN-001"
+    },
+    {
+      "techniqueID": "T1053.005",
+      "score": 9,
+      "enabled": true,
+      "comment": "100113 DL-WIN-004"
+    },
+    {
+      "techniqueID": "T1059.001",
+      "score": 12,
+      "enabled": true,
+      "comment": "100110 DL-WIN-001"
+    },
+    {
+      "techniqueID": "T1071",
+      "score": 14,
+      "enabled": true,
+      "comment": "100602 DL-CTI-001; 100603 DL-CTI-002"
+    },
+    {
+      "techniqueID": "T1078",
+      "score": 13,
+      "enabled": true,
+      "comment": "100101 DL-LNX-002; 100117 DL-WIN-008"
+    },
+    {
+      "techniqueID": "T1082",
+      "score": 10,
+      "enabled": true,
+      "comment": "100118 DL-WIN-009a; 100119 DL-WIN-009b"
+    },
+    {
+      "techniqueID": "T1083",
+      "score": 10,
+      "enabled": true,
+      "comment": "100131 DL-WEB-002"
+    },
+    {
+      "techniqueID": "T1087",
+      "score": 10,
+      "enabled": true,
+      "comment": "100118 DL-WIN-009a; 100119 DL-WIN-009b"
+    },
+    {
+      "techniqueID": "T1105",
+      "score": 12,
+      "enabled": true,
+      "comment": "100112 DL-WIN-003"
+    },
+    {
+      "techniqueID": "T1110",
+      "score": 13,
+      "enabled": true,
+      "comment": "100117 DL-WIN-008"
+    },
+    {
+      "techniqueID": "T1110.001",
+      "score": 13,
+      "enabled": true,
+      "comment": "100100 DL-LNX-001; 100101 DL-LNX-002"
+    },
+    {
+      "techniqueID": "T1136.001",
+      "score": 10,
+      "enabled": true,
+      "comment": "100115 DL-WIN-006"
+    },
+    {
+      "techniqueID": "T1190",
+      "score": 12,
+      "enabled": true,
+      "comment": "100130 DL-WEB-001; 100131 DL-WEB-002"
+    },
+    {
+      "techniqueID": "T1204.002",
+      "score": 13,
+      "enabled": true,
+      "comment": "100111 DL-WIN-002"
+    },
+    {
+      "techniqueID": "T1218",
+      "score": 12,
+      "enabled": true,
+      "comment": "100112 DL-WIN-003"
+    },
+    {
+      "techniqueID": "T1490",
+      "score": 15,
+      "enabled": true,
+      "comment": "100120 DL-WIN-010"
+    },
+    {
+      "techniqueID": "T1505.003",
+      "score": 13,
+      "enabled": true,
+      "comment": "100132 DL-WEB-003"
+    },
+    {
+      "techniqueID": "T1547.001",
+      "score": 10,
+      "enabled": true,
+      "comment": "100114 DL-WIN-005"
+    },
+    {
+      "techniqueID": "T1548.003",
+      "score": 10,
+      "enabled": true,
+      "comment": "100102 DL-LNX-003"
+    },
+    {
+      "techniqueID": "T1566.001",
+      "score": 13,
+      "enabled": true,
+      "comment": "100111 DL-WIN-002"
+    },
+    {
+      "techniqueID": "T1595.002",
+      "score": 8,
+      "enabled": true,
+      "comment": "100133 DL-WEB-004"
+    }
+  ],
+  "legendItems": [
+    {
+      "label": "Detected by custom rule",
+      "color": "#f4a259"
+    }
+  ]
+}

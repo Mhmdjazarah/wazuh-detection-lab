@@ -1,0 +1,13 @@
+<!--
+  Add inside <ossec_config> of the manager's ossec.conf
+  (Docker single-node: config/wazuh_cluster/wazuh_manager.conf, or
+   /wazuh-config-mount/etc/ossec.conf inside the container so it survives restarts).
+-->
+<integration>
+  <name>custom-misp.py</name>
+  <hook_url>https://MISP_HOST_IP</hook_url>
+  <api_key>YOUR_MISP_AUTH_KEY</api_key>
+  <!-- only enrich alerts that can contain IOCs -->
+  <group>sysmon_event_3,sysmon_event_22,web,authentication_failed,authentication_success,syscheck</group>
+  <alert_format>json</alert_format>
+</integration>

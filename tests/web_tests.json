@@ -1,0 +1,56 @@
+[
+  {
+    "id": "DL-WEB-001",
+    "description": "UNION SELECT SQL injection",
+    "log_format": "apache",
+    "events": [
+      "203.0.113.23 - - [17/Nov/2026:10:00:00 +0300] \"GET /products.php?id=1%20UNION%20SELECT%20username,password%20FROM%20users-- HTTP/1.1\" 200 512 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64)\""
+    ],
+    "expect_rule": "100130"
+  },
+  {
+    "id": "DL-WEB-001b",
+    "description": "Boolean SQLi ' OR '1'='1",
+    "log_format": "apache",
+    "events": [
+      "203.0.113.23 - - [17/Nov/2026:10:00:00 +0300] \"GET /login.php?user=admin%27%20or%20%271%27=%271 HTTP/1.1\" 200 512 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64)\""
+    ],
+    "expect_rule": "100130"
+  },
+  {
+    "id": "DL-WEB-002",
+    "description": "Path traversal to /etc/passwd",
+    "log_format": "apache",
+    "events": [
+      "203.0.113.23 - - [17/Nov/2026:10:00:00 +0300] \"GET /download.php?file=../../../../etc/passwd HTTP/1.1\" 200 512 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64)\""
+    ],
+    "expect_rule": "100131"
+  },
+  {
+    "id": "DL-WEB-003",
+    "description": "Web shell cmd=whoami",
+    "log_format": "apache",
+    "events": [
+      "203.0.113.23 - - [17/Nov/2026:10:00:00 +0300] \"GET /uploads/shell.php?cmd=whoami HTTP/1.1\" 200 512 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64)\""
+    ],
+    "expect_rule": "100132"
+  },
+  {
+    "id": "DL-WEB-004",
+    "description": "sqlmap user-agent",
+    "log_format": "apache",
+    "events": [
+      "203.0.113.23 - - [17/Nov/2026:10:00:00 +0300] \"GET /index.php HTTP/1.1\" 404 512 \"-\" \"sqlmap/1.8.2#stable (https://sqlmap.org)\""
+    ],
+    "expect_rule": "100133"
+  },
+  {
+    "id": "NEG-WEB-001",
+    "description": "Normal request must NOT trigger web rules",
+    "log_format": "apache",
+    "events": [
+      "203.0.113.23 - - [17/Nov/2026:10:00:00 +0300] \"GET /products.php?id=42&sort=price HTTP/1.1\" 200 512 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64)\""
+    ],
+    "expect_not_rule": "100130"
+  }
+]

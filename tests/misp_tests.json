@@ -1,0 +1,22 @@
+[
+  {
+    "id": "DL-CTI-001",
+    "description": "MISP IOC match (to_ids=false)",
+    "log_format": "json",
+    "location": "misp",
+    "events": [
+      "{\"integration\": \"misp\", \"misp\": {\"value\": \"kali365.xyz\", \"ioc_kind\": \"domain\", \"matched\": \"true\", \"event_id\": \"2367\", \"event_info\": \"Phishing kit infrastructure\", \"type\": \"domain\", \"category\": \"Network activity\", \"to_ids\": \"false\"}}"
+    ],
+    "expect_rule": "100602"
+  },
+  {
+    "id": "DL-CTI-002",
+    "description": "MISP IOC match (to_ids=true)",
+    "log_format": "json",
+    "location": "misp",
+    "events": [
+      "{\"integration\": \"misp\", \"misp\": {\"value\": \"185.220.101.4\", \"ioc_kind\": \"ip\", \"matched\": \"true\", \"event_id\": \"1201\", \"event_info\": \"Tor exit nodes\", \"type\": \"ip-dst\", \"category\": \"Network activity\", \"to_ids\": \"true\"}}"
+    ],
+    "expect_rule": "100603"
+  }
+]
